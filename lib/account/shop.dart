@@ -95,7 +95,7 @@ class _ShopState extends State<Shop> {
               padding: EdgeInsets.all(10),
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage(asset('arriere-plan-vectoriel-motif-pointille-dans-style-aborigene_619130-1630.avif')),
+                  image: AssetImage(asset('arriere-plan-vectoriel-motif-pointille-dans-style-aborigene_619130-1631.png')),
                   fit: BoxFit.cover, // or BoxFit.fill depending on your need
                 ),
               ),

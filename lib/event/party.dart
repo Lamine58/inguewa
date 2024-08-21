@@ -33,7 +33,7 @@ class _PartyState extends State<Party> {
     setState(() {
 
       images.add(widget.party['banner']);
-      var data = jsonDecode(prefs.getString('customerData')!);
+      var data = widget.party['customer'];
       id = data['id'];
       phone = data['business_phone'];
       customer = data;

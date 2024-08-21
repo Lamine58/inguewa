@@ -344,7 +344,7 @@ class _SignInState extends State<SignIn> {
                         height: double.infinity,
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: AssetImage(asset('arriere-plan-vectoriel-motif-pointille-dans-style-aborigene_619130-1630.avif')),
+                            image: AssetImage(asset('arriere-plan-vectoriel-motif-pointille-dans-style-aborigene_619130-1631.png')),
                             fit: BoxFit.cover,
                           ),
                           borderRadius: BorderRadius.circular(5),

@@ -39,7 +39,7 @@ class _ItemState extends State<Item> {
         images.add(widget.item['image_two']);
       }
       
-      var data = jsonDecode(prefs.getString('customerData')!);
+      var data = widget.item['customer'];
       id = data['id'];
       phone = data['business_phone'];
       customer = data;
