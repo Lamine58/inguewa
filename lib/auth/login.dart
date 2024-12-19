@@ -20,9 +20,10 @@ class _LoginState extends State<Login> {
     return DefaultTabController(
         length: 2,
         child: Scaffold(
+
         appBar: AppBar(
           toolbarHeight: 50,
-          backgroundColor: whiteColor(),
+          backgroundColor:Colors.white,
           title: 
             Text(
               'Inguewa',
@@ -34,11 +35,10 @@ class _LoginState extends State<Login> {
               ),
             ),
             bottom: TabBar(
-              padding: EdgeInsets.all(10),
-              indicatorColor: primaryColor(),
+              indicatorColor: Colors.redAccent,
               unselectedLabelColor: secondaryColor(),
               indicatorWeight: 3,
-              labelColor: primaryColor(),
+              labelColor: Colors.redAccent,
               tabs: const [
                 Tab(text:'Connexion'),
                 Tab(text: 'Inscription',),

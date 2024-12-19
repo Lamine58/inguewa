@@ -83,11 +83,12 @@ class _EventsState extends State<Events> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         iconTheme: IconThemeData(
           color: Colors.white
         ),
-        backgroundColor: secondaryColor(),
+        backgroundColor:  Colors.redAccent,
         title: Text(
           'Evènements (${events.length})',
           style: TextStyle(
@@ -107,7 +108,7 @@ class _EventsState extends State<Events> {
           height: 50,
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: secondaryColor(),
+              backgroundColor: Colors.redAccent,
               elevation: 0,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5),
@@ -150,7 +151,7 @@ class _EventsState extends State<Events> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                 Padding(
-                  padding: const EdgeInsets.only(left: 40,right: 40),
+                  padding: const EdgeInsets.all(5),
                   child: Container(
                     decoration: BoxDecoration(
                       color: Color(0xfff1f3f4),
@@ -159,44 +160,22 @@ class _EventsState extends State<Events> {
                     child: TextField(
                       controller: searchController,
                       decoration: InputDecoration(
-                        contentPadding: EdgeInsets.only(top: 7,bottom: 7,left: 35,right: 5),
+                        hintText: 'Rechercher...',
+                        prefixIcon: Icon(BootstrapIcons.search),
                         border: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.transparent, 
-                            width:1.2
-                          ),
-                          borderRadius: BorderRadius.circular(50.0), 
+                          borderSide: BorderSide(color:   Colors.grey.shade300),
+                          borderRadius: BorderRadius.circular(12),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.transparent,
-                            width:1.2,
-                          ),
-                          borderRadius: BorderRadius.circular(50.0), 
+                          borderSide: BorderSide(color: Colors.grey.shade300),
+                          borderRadius: BorderRadius.circular(12),
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.transparent,
-                            width:1.2,
-                          ),
-                          borderRadius: BorderRadius.circular(50.0), 
+                          borderSide: BorderSide(color: Colors.grey.shade300),
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                        prefixIcon: Container(
-                          width: 47,
-                          margin: EdgeInsets.only(right: 10),
-                          padding: EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50.0), 
-                            color: secondaryColor(),
-                          ),
-                          child: Icon(BootstrapIcons.search, color: Colors.white,size: 24),
-                        ),
-                        suffixIcon: Icon(BootstrapIcons.funnel,color: secondaryColor()),
-                        hintText: 'Recherchez un évènement',
-                        hintStyle: TextStyle(
-                          color: Color(0xffbbbbbb),
-                          fontSize: 14
-                        )
+                        filled: true,
+                        fillColor: Colors.grey.shade100,
                       ),
                     ),
                   ),

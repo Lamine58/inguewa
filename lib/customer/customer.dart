@@ -376,7 +376,9 @@ class _CustomerState extends State<Customer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+
         iconTheme: IconThemeData(
           color: Colors.white
         ),
@@ -390,7 +392,7 @@ class _CustomerState extends State<Customer> {
             fontFamily: 'louisewalker',
           ),
         ),
-        backgroundColor: secondaryColor(),
+        backgroundColor:Colors.redAccent,
         elevation: 0,
       ),
       body: Column(
@@ -412,11 +414,11 @@ class _CustomerState extends State<Customer> {
                       border: Border(
                         bottom: BorderSide(
                           width: 1.5,
-                          color: type=='Personnel' ? primaryColor() : Colors.transparent
+                          color: type=='Personnel' ? Colors.redAccent : Colors.transparent
                         )
                       )
                     ),
-                    child: Text(textAlign: TextAlign.center,'Personnel'),
+                    child: Text(textAlign: TextAlign.center,'Personnel', style: TextStyle(color: Colors.redAccent),),
                   ),
                 ),
               ),
@@ -436,11 +438,11 @@ class _CustomerState extends State<Customer> {
                       border: Border(
                         bottom: BorderSide(
                           width: 1.5,
-                          color: type=='Professionnel' ? primaryColor() : Colors.transparent
+                          color: type=='Professionnel' ? Colors.redAccent : Colors.transparent
                         )
                       )
                     ),
-                    child: Text(textAlign: TextAlign.center,'Professionnel'),
+                    child: Text(textAlign: TextAlign.center,'Professionnel', style: TextStyle(color: Colors.redAccent),),
                   ),
                 ),
               )
@@ -796,7 +798,7 @@ class _CustomerState extends State<Customer> {
                                     ),
                                     style: ElevatedButton.styleFrom(
                                       elevation: 0,
-                                      backgroundColor: secondaryColor(),
+                                      backgroundColor: Colors.redAccent,
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(5),
                                       ),
@@ -993,7 +995,7 @@ class _CustomerState extends State<Customer> {
                                     ),
                                     style: ElevatedButton.styleFrom(
                                       elevation: 0,
-                                      backgroundColor: secondaryColor(),
+                                      backgroundColor: Colors.redAccent,
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(5),
                                       ),

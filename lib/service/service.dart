@@ -1,32 +1,26 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:inguewa/api/api.dart';
-import 'package:inguewa/function/function.dart';
 import 'package:inguewa/service/item.dart';
 
 class Service extends StatefulWidget {
   final id;
-  const Service(this.id,{Key? key}) : super(key: key);
+  const Service(this.id, {Key? key}) : super(key: key);
 
   @override
   State<Service> createState() => _ServiceState();
 }
 
 class _ServiceState extends State<Service> {
-
   var load = true;
   late Api api = Api();
   List<dynamic> services = [];
   TextEditingController searchController = TextEditingController();
   List filteredList = [];
 
-
   init() async {
-    
     var response = await api.get('shop?id=${widget.id}');
-
-    try{
+    try {
       if (response['status'] == 'success') {
         setState(() {
           services = response['data'];
@@ -34,188 +28,177 @@ class _ServiceState extends State<Service> {
           filteredList = services;
         });
       }
-    }catch(err){
+    } catch (err) {
       print(err);
     }
-    
   }
 
-  image (item) {
-
-    if(item['image_one']!=null) {
-      return Image.network(api.getbaseUpload() + item['image_one'],fit: BoxFit.cover,);
+  image(item) {
+    if (item['image_one'] != null) {
+      return Image.network(api.getbaseUpload() + item['image_one'], fit: BoxFit.cover);
     }
 
-    if(item['image_two']!=null) {
-      return Image.network(api.getbaseUpload() + item['image_two'],fit: BoxFit.cover,);
+    if (item['image_two'] != null) {
+      return Image.network(api.getbaseUpload() + item['image_two'], fit: BoxFit.cover);
     }
 
-    return  Image.asset('assets/images/74e6e7e382d0ff5d7773ca9a87e6f6f8817a68a.png',fit: BoxFit.cover,);
-    
+    return Image.asset('assets/images/74e6e7e382d0ff5d7773ca9a87e6f6f8817a68a.png', fit: BoxFit.cover);
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     init();
     searchController.addListener(filterItems);
   }
 
-
   void filterItems() {
     String query = searchController.text.toLowerCase();
     setState(() {
       filteredList = services.where((item) =>
-          item['name'].toString().toLowerCase().contains(query) ||
-          item['description'].toString().toLowerCase().contains(query)
-      ).toList();
+      item['name'].toString().toLowerCase().contains(query) ||
+          item['description'].toString().toLowerCase().contains(query)).toList();
     });
   }
-  
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        toolbarHeight: 40,
-        backgroundColor: secondaryColor(),
-        title: 
-          Text(
-            'Services',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.w100,
-              fontFamily: 'louisewalker',
-            ),
-          )
+        toolbarHeight: 70,
+        backgroundColor: Colors.redAccent,
+        title: Text(
+          'Nos Services',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 26,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'louisewalker',
+          ),
         ),
-        body: load ? Center(child: CircularProgressIndicator(color: secondaryColor())) : Column(
+      ),
+      body: load
+          ? Center(child: CircularProgressIndicator(color: Colors.redAccent))
+          : SingleChildScrollView(
+        child: Column(
           children: [
             Container(
-              padding: EdgeInsets.all(10),
+              margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
               decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(asset('arriere-plan-vectoriel-motif-pointille-dans-style-aborigene_619130-1630.avif')),
-                  fit: BoxFit.cover, // or BoxFit.fill depending on your need
-                ),
+                color: Colors.white.withOpacity(0.8),
+                borderRadius: BorderRadius.circular(15),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.2),
+                    blurRadius: 10,
+                    offset: Offset(0, 6),
+                  ),
+                ],
               ),
-              child: SizedBox(
-                height: 55,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
                 child: TextField(
                   controller: searchController,
-                  style: TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.all(10),
-                      hintText: 'Recherche',
-                      labelStyle: TextStyle(color: Colors.white),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      hintStyle: TextStyle(color: Color.fromARGB(169, 255, 255, 255),fontWeight: FontWeight.w300,fontSize: 15),
-                      filled: true,
-                      fillColor: const Color.fromARGB(255, 0, 0, 0).withOpacity(.8),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(
-                          color: Colors.transparent,
-                        )
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(
-                          color: Color.fromARGB(77, 255, 255, 255),
-                        )
-                      ),
-                      suffixIcon: Icon(BootstrapIcons.search,color: Color.fromARGB(188, 255, 255, 255),size: 20),
-                      prefixIcon: Container(child: Image.asset(asset('cauris.png')),padding: EdgeInsets.all(7),)
-                    ),
+                  style: TextStyle(color: Colors.black),
+                  decoration: InputDecoration(
+                    hintText: 'Rechercher un service...',
+                    hintStyle: TextStyle(color: Colors.grey),
+                    prefixIcon: Icon(BootstrapIcons.search, color: Colors.grey),
+                    border: InputBorder.none,
+                  ),
                 ),
               ),
             ),
-            paddingTop(5),
-            Expanded(
-              child: services.isNotEmpty ? Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 5,
-                    mainAxisSpacing: 5,
-                  ),
-                  itemCount: filteredList.length,
-                  itemBuilder: (context, index) {
+            SizedBox(height: 10),
+            services.isNotEmpty
+                ? Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: GridView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 15,
+                  mainAxisSpacing: 15,
+                  childAspectRatio: 0.75,
+                ),
+                itemCount: filteredList.length,
+                itemBuilder: (context, index) {
+                  String eventName = filteredList[index]['name'] ?? '';
+                  String displayName = eventName.length > 15 ? '${eventName.substring(0, 15)}...' : eventName;
 
-                    String eventName = filteredList[index]['name'] ?? '';
-                    String displayName = eventName.length > 15
-                        ? '${eventName.substring(0, 15)}...'
-                        : eventName;
-
-                    return GestureDetector(
-                      onTap: (){
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Item(filteredList[index]),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(width: 1,color: Color.fromARGB(255, 220, 220, 220))
+                  return GestureDetector(
+                    onTap: () {
+                      // Navigate to the Item page when the card is tapped
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Item(filteredList[index]),
                         ),
+                      );
+                    },
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                      elevation: 4, // Lighter shadow to make it more subtle
+                      shadowColor: Colors.black26,
+                      color: Colors.white, // Ensuring the background is white
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Item(filteredList[index]),
+                            ),
+                          );
+                        },
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Stack(
-                              children: [
-                                Container(
-                                  height: 130,
-                                  width: MediaQuery.sizeOf(context).width/2+20,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(9),
-                                    child: image(filteredList[index]),
-                                  ),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(width: 1,color: Color.fromARGB(255, 220, 220, 220))
-                                  ),
-                                ),
-                                Positioned(
-                                  top: 7,
-                                  right: 7,
-                                  child: Container(
-                                    padding: EdgeInsets.all(5),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      color: Colors.white,
-                                      border: Border.all(
-                                        width: .5,
-                                        color: Color.fromARGB(255, 209, 176, 76),
-                                      )
-                                    ),
-                                    child: Icon(BootstrapIcons.heart,color: primaryColor(),size: 15,),
-                                  ),
-                                )
-                              ],
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(18),
+                              child: Container(
+                                height: 150,
+                                width: double.infinity,
+                                child: image(filteredList[index]),
+                              ),
                             ),
-                            paddingTop(3),
-                            Text(displayName,style: TextStyle(fontFamily: 'louisewalker')),
-                            Text(filteredList[index]['price'],style: TextStyle(fontSize: 12)),
+                            SizedBox(height: 8),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                displayName,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  fontFamily: 'louisewalker',
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Text(
+                                filteredList[index]['price'],
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.green,
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),
-                    );
-                  },
-                ),
-              ) :
-              Center(child: Text('Aucun service'),)
+                    ),
+                  );
+                },
+              ),
             )
+                : Center(child: Text('Aucun service disponible', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold))),
           ],
         ),
-      );
+      ),
+    );
   }
 }

@@ -1,11 +1,10 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last
-import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:inguewa/api/api.dart';
 import 'package:inguewa/banner/slide.dart';
 import 'package:inguewa/event/party.dart';
-import 'package:inguewa/function/function.dart';
 import 'package:inguewa/service/service.dart';
+import 'dart:async'; // Pour utiliser Timer
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -15,438 +14,247 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-
   var categories = [];
   var banners = [];
   var load = true;
   late Api api = Api();
-  List<dynamic> events_all = [];
-  List<dynamic> events_coming = [];
-  TextEditingController searchController = TextEditingController();
+  List<dynamic> eventsAll = [];
+  List<dynamic> eventsComing = [];
   List filteredList = [];
-
+  TextEditingController searchController = TextEditingController();
+  late PageController _pageController; // Controller pour le carousel
+  late Timer _timer; // Timer pour changer les pages automatiquement
 
   @override
   void initState() {
     super.initState();
+    _pageController = PageController();
     init();
     searchController.addListener(filterItems);
+    _startAutoSlide(); // Lance le défilement automatique
   }
 
+  @override
+  void dispose() {
+    _pageController.dispose();
+    _timer.cancel(); // Annule le timer lorsque le widget est détruit
+    super.dispose();
+  }
+
+  void _startAutoSlide() {
+    _timer = Timer.periodic(Duration(seconds: 3), (timer) {
+      if (_pageController.hasClients) {
+        int nextPage = (_pageController.page!.toInt() + 1) % banners.length;
+        _pageController.animateToPage(nextPage, duration: Duration(seconds: 1), curve: Curves.easeInOut);
+      }
+    });
+  }
 
   void filterItems() {
     String query = searchController.text.toLowerCase();
     setState(() {
-      filteredList = events_all.where((item) =>
-          item['name'].toString().toLowerCase().contains(query) ||
-          item['description'].toString().toLowerCase().contains(query)
-      ).toList();
+      filteredList = eventsAll.where((item) =>
+      item['name'].toString().toLowerCase().contains(query) ||
+          item['description'].toString().toLowerCase().contains(query)).toList();
     });
   }
 
-  init() async {
-    
+  Future<void> init() async {
     var response = await api.get('get-data');
+    if (response['status'] == 'success') {
+      setState(() {
 
-    try{
-      if (response['status'] == 'success') {
-        setState(() {
-          categories = response['categories'];
-          banners = response['banners'];
-          events_all = response['events'];
-          events_coming = response['events_coming'];
-          load = false;
-          filteredList = events_all;
-        });
-      }
-    }catch(err){
-      print(err);
+        categories = response['categories'];
+        banners = response['banners'];
+        eventsAll = response['events'];
+        eventsComing = response['events_coming'];
+        load = false;
+        filteredList = eventsAll;
+
+        print(eventsAll);
+        print('dddddddddddddddddddddddddddddddddddddddddddddddddd');
+      });
     }
-    
   }
-
-  Future<void> _refreshPage() async {
-    await Future.delayed(Duration(seconds: 3));
-    setState(() {
-      init();
-    });
-  }
-
 
   @override
   Widget build(BuildContext context) {
-
-    return RefreshIndicator(
-      onRefresh: _refreshPage,
-      child: Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 40,
-          backgroundColor: secondaryColor(),
-          title: 
-            Text(
-              'Inguewa',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.w100,
-                fontFamily: 'louisewalker',
-              ),
-            ),
-          ),
-          body: load ? Center(child: CircularProgressIndicator(color:secondaryColor())) : Column(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        toolbarHeight: 20,
+        backgroundColor: Colors.redAccent,
+      ),
+      body: load
+          ? Center(child: CircularProgressIndicator())
+          : RefreshIndicator(
+        onRefresh: init,
+        child: SingleChildScrollView(
+          child: Column(
             children: [
-              Container(
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(asset('arriere-plan-vectoriel-motif-pointille-dans-style-aborigene_619130-1630.avif')),
-                    fit: BoxFit.cover, // or BoxFit.fill depending on your need
-                  ),
-                ),
-                child: SizedBox(
-                  height: 55,
-                  child: TextField(
-                    controller: searchController,
-                    style: TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.all(10),
-                        hintText: 'Recherche',
-                        labelStyle: TextStyle(color: Colors.white),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        hintStyle: TextStyle(color: Color.fromARGB(169, 255, 255, 255),fontWeight: FontWeight.w300,fontSize: 15),
-                        filled: true,
-                        fillColor: const Color.fromARGB(255, 0, 0, 0)?.withOpacity(.8),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
-                            color: Colors.transparent,
-                          )
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
-                            color: Color.fromARGB(77, 255, 255, 255),
-                          )
-                        ),
-                        suffixIcon: Icon(BootstrapIcons.search,color: Color.fromARGB(188, 255, 255, 255),size: 20),
-                        prefixIcon: Container(child: Image.asset(asset('cauris.png')),padding: EdgeInsets.all(7),)
-                      ),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Container(
-                          padding: EdgeInsets.all(7),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              for(var banner in banners)
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => Slide(banner),
-                                      ),
-                                    );
-                                  },
-                                  child: Stack(
-                                    children: [
-                                      Container(
-                                        margin: EdgeInsets.only(right: 10),
-                                        height: 150,
-                                        width: MediaQuery.sizeOf(context).width-70,
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(9),
-                                          child: Image.network(
-                                            api.getbaseUpload()+banner['banner'],
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(10),
-                                          border: Border.all(width: 1,color: Color.fromARGB(255, 220, 220, 220))
-                                        ),
-                                      ),
-                                      Positioned(
-                                        bottom: 10,
-                                        right: 20,
-                                        child: Container(
-                                          padding: EdgeInsets.only(left: 10,top: 3,bottom: 3,right: 3),
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(15),
-                                            color: Colors.white,
-                                            border: Border.all(
-                                              width: .5,
-                                              color: Color.fromARGB(255, 209, 176, 76),
-                                            )
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              Text('Voir plus',style: TextStyle(fontFamily: 'Polyester',fontSize: 12),),
-                                              paddingLeft(10),
-                                              Container(
-                                                height: 23,
-                                                width: 23,
-                                                child: Icon(Icons.arrow_forward,color: Colors.white,size: 15,),
-                                                decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(50),
-                                                  color: Color.fromARGB(255, 209, 176, 76),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: Text('Services',style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold),),
-                      ),
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Container(
-                          padding: EdgeInsets.all(7),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              for(var icon in categories)
-                                GestureDetector(
-                                  onTap: (){
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => Service(icon['id']),
-                                      ),
-                                    );
-                                  },
-                                  child: Container(
-                                    margin: EdgeInsets.only(right: 7,left: 7),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Container(
-                                          height: 50,
-                                          width: 50,
-                                          padding: EdgeInsets.all(8),
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(50),
-                                            border: Border.all(width: 1,color: secondaryColor())
-                                          ),
-                                          child: Image.network(api.getbaseUpload()+icon['icon']),
-                                        ),
-                                        Text(icon['name'],style: TextStyle(fontSize: 12),textAlign: TextAlign.center)
-                                      ],
-                                    ),
-                                  ),
-                                )
-                            ],
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: Text('Événements venir',style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold),),
-                      ),
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Container(
-                          padding: EdgeInsets.all(7),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              for(var event in events_coming)
-                                GestureDetector(
-                                  onTap: (){
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => Party(event),
-                                      ),
-                                    );
-                                  },
-                                  child: Container(
-                                    width: events_all.length>1 ? MediaQuery.sizeOf(context).width/2+20 : MediaQuery.sizeOf(context).width-15,
-                                    margin: EdgeInsets.only(right: 10),
-                                    padding: EdgeInsets.all(5),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(width: 1,color: Color.fromARGB(255, 220, 220, 220))
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Stack(
-                                          children: [
-                                            Container(
-                                              height: 130,
-                                              width: events_all.length>1 ? MediaQuery.sizeOf(context).width/2+20 : MediaQuery.sizeOf(context).width-15,
-                                              child: ClipRRect(
-                                                borderRadius: BorderRadius.circular(9),
-                                                child: Image.network(api.getbaseUpload()+event['banner'],
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(10),
-                                                border: Border.all(width: 1,color: Color.fromARGB(255, 220, 220, 220))
-                                              ),
-                                            ),
-                                            Positioned(
-                                              top: 7,
-                                              left: 7,
-                                              child: Container(
-                                                padding: EdgeInsets.all(5),
-                                                decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(5),
-                                                  color: Colors.white,
-                                                  border: Border.all(
-                                                    width: .5,
-                                                    color: Color.fromARGB(255, 209, 176, 76),
-                                                  )
-                                                ),
-                                                child: shortDate(event['date'])
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                        paddingTop(3),
-                                        Text(event['name'],style: TextStyle(fontFamily: 'louisewalker')),
-                                        Text('${event['space']}',style: TextStyle(fontSize: 12)),
-                                        paddingTop(5),
-                                        Row(
-                                          children: [
-                                            Icon(BootstrapIcons.calendar_week,size: 20),
-                                            paddingLeft(10),
-                                            Text('${event['date']} à ${event['hour']}',style: TextStyle(fontSize: 12)),
-                                          ],
-                                        ),
-                                        paddingTop(5),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              if(events_all.isEmpty)
-                                Center(child: Text('Aucun évènement a venir'),)
-                            ],
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10,top: 5),
-                        child: Text('Tout les événements',style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold),),
-                      ),
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Container(
-                          padding: EdgeInsets.all(7),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              for(var event in filteredList)
-                                GestureDetector(
-                                  onTap: (){
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => Party(event),
-                                      ),
-                                    );
-                                  },
-                                  child: Container(
-                                    width: events_all.length>1 ? MediaQuery.sizeOf(context).width/2+20 : MediaQuery.sizeOf(context).width-15,
-                                    margin: EdgeInsets.only(right: 10),
-                                    padding: EdgeInsets.all(5),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(width: 1,color: Color.fromARGB(255, 220, 220, 220))
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Stack(
-                                          children: [
-                                            Container(
-                                              height: 130,
-                                              width: events_all.length>1 ? MediaQuery.sizeOf(context).width/2+20 : MediaQuery.sizeOf(context).width-15,
-                                              child: ClipRRect(
-                                                borderRadius: BorderRadius.circular(9),
-                                                child: Image.network(api.getbaseUpload()+event['banner'],
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(10),
-                                                border: Border.all(width: 1,color: Color.fromARGB(255, 220, 220, 220))
-                                              ),
-                                            ),
-                                            Positioned(
-                                              top: 7,
-                                              left: 7,
-                                              child: Container(
-                                                padding: EdgeInsets.all(5),
-                                                decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(5),
-                                                  color: Colors.white,
-                                                  border: Border.all(
-                                                    width: .5,
-                                                    color: Color.fromARGB(255, 209, 176, 76),
-                                                  )
-                                                ),
-                                                child: shortDate(event['date'])
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                        paddingTop(3),
-                                        Text(event['name'],style: TextStyle(fontFamily: 'louisewalker')),
-                                        Text('${event['space']}',style: TextStyle(fontSize: 12)),
-                                        paddingTop(5),
-                                        Row(
-                                          children: [
-                                            Icon(BootstrapIcons.calendar_week,size: 20),
-                                            paddingLeft(10),
-                                            Text('${event['date']} à ${event['hour']}',style: TextStyle(fontSize: 12)),
-                                          ],
-                                        ),
-                                        paddingTop(5),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              if(events_all.isEmpty)
-                                Center(child: Text('Aucun évènement a venir'),)
-                            ],
-                          ),
-                        ),
-                      ),
-                      paddingTop(80)
-                    ],
-                  ),
-                )
-              )
+              _buildSearchBar(),
+              _buildBannerCarousel(),
+              _buildSectionTitle('Services'),
+              _buildCategoryGrid(),
+              _buildSectionTitle('Événements à venir'),
+              _buildEventGrid(eventsComing),
+              _buildSectionTitle('Tous les événements'),
+              _buildEventGrid(filteredList),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildSearchBar() {
+    return Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: TextField(
+        controller: searchController,
+        decoration: InputDecoration(
+          hintText: 'Rechercher...',
+          prefixIcon: Icon(BootstrapIcons.search),
+          border: OutlineInputBorder(
+            borderSide: BorderSide(color:   Colors.grey.shade300),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey.shade300),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey.shade300),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          filled: true,
+          fillColor: Colors.grey.shade100,
+        ),
+      ),
+    );
+  }
+
+
+  Widget _buildBannerCarousel() {
+    return SizedBox(
+      height: 180,
+      child: PageView.builder(
+        controller: _pageController,
+        itemCount: banners.length,
+        itemBuilder: (context, index) {
+          var banner = banners[index];
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: GestureDetector(
+
+              onTap: () {
+
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (_) => Slide(banner)));
+              } ,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.network(api.getbaseUpload() + banner['banner'],
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    fit: BoxFit.cover),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildCategoryGrid() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: GridView.builder(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 4,
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 10,
+          childAspectRatio: 0.9,
+        ),
+        itemCount: categories.length,
+        itemBuilder: (context, index) {
+          var icon = categories[index];
+          return GestureDetector(
+            onTap: () => Navigator.push(
+                context, MaterialPageRoute(builder: (_) => Service(icon['id']))),
+            child: Column(
+              children: [
+                Image.network(api.getbaseUpload() + icon['icon'],
+                    width: 50, height: 50, fit: BoxFit.contain),
+                SizedBox(height: 5),
+                Text(icon['name'],
+                    style: TextStyle(fontSize: 12),
+                    textAlign: TextAlign.center),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 16.0, top: 10, bottom: 5),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Text(title,
+            style: TextStyle(
+                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87)),
+      ),
+    );
+  }
+
+  Widget _buildEventGrid(List<dynamic> events) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+      child: GridView.builder(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 10,
+          childAspectRatio: 0.75,
+        ),
+        itemCount: events.length,
+        itemBuilder: (context, index) {
+          var event = events[index];
+          return GestureDetector(
+            onTap: () {
+            //  print(events);
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (_) => Party(event)));
+            },
+            child: Column(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.network(
+                    api.getbaseUpload() + event['banner'],
+                    height: 120,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                SizedBox(height: 5),
+                Text(event['name'],
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 14)),
+                SizedBox(height: 3),
+                Text('${event['date']} à ${event['hour']}',
+                    style: TextStyle(fontSize: 12)),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

@@ -1,8 +1,8 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'dart:io';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 // ignore: depend_on_referenced_packages
-import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
@@ -79,15 +79,20 @@ Future<File> compressImage(String imagePath, {int targetSize = 0}) async {
   int quality = 100;
 
   do {
-    var compressedData = await FlutterNativeImage.compressImage(
+    // Compression de l'image avec la qualité actuelle
+    var compressedData = await FlutterImageCompress.compressWithFile(
       imagePath,
       quality: quality,
     );
 
-    compressedImage = File(compressedData.path);
+    // Créer un fichier temporaire pour stocker l'image compressée
+    final tempDir = Directory.systemTemp;
+    final tempFile = File('${tempDir.path}/compressed_image.jpg');
+    compressedImage = await tempFile.writeAsBytes(compressedData!);
 
+    // Réduire la qualité si la taille cible n'est pas atteinte
     if (targetSize > 0 && compressedImage.lengthSync() > targetSize) {
-      quality -= 10; // Decrease quality by 10 units if the size is still too large
+      quality -= 10; // Réduire la qualité de 10 unités
     }
   } while (targetSize > 0 && compressedImage.lengthSync() > targetSize && quality > 0);
 

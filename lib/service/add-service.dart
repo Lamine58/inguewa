@@ -209,11 +209,12 @@ class _AddServiceState extends State<AddService> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         iconTheme: IconThemeData(
           color: Colors.white
         ),
-        backgroundColor: secondaryColor(),
+        backgroundColor: Colors.redAccent,
         title: Text(
             'Ajouter un service',
             style: TextStyle(
@@ -339,7 +340,7 @@ class _AddServiceState extends State<AddService> {
                         height: 50,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: secondaryColor(),
+                            backgroundColor: Colors.redAccent,
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5),

@@ -15,11 +15,12 @@ class _SupportState extends State<Support> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         iconTheme: IconThemeData(
           color: Colors.white
         ),
-        backgroundColor: secondaryColor(),
+        backgroundColor: Colors.redAccent,
         title: Text(
           'Supprots',
           style: TextStyle(
@@ -42,13 +43,13 @@ class _SupportState extends State<Support> {
                     children: [
                       logo(150),
                       paddingTop(30),
-                      Icon(BootstrapIcons.headset,size: 70,color: primaryColor()),
+                      Icon(BootstrapIcons.headset,size: 70,color: Colors.redAccent,),
                       paddingTop(5),
                       Text('(+225) 0102030405 / (+225) 0102030405',textAlign: TextAlign.center,),
                       paddingTop(5),
                       Text('(+225) 0102030405',textAlign: TextAlign.center,),
                       paddingTop(10),
-                      Icon(BootstrapIcons.chat_dots,size: 70,color: primaryColor()),
+                      Icon(BootstrapIcons.chat_dots,size: 70,color:Colors.redAccent,),
                       paddingTop(10),
                       Text('support@inguewa.ci',textAlign: TextAlign.center,),
                       paddingTop(20),

@@ -14,9 +14,9 @@ class _LandingState extends State<Landing> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: Colors.black,
       body: Stack(
         children: [
+          // Arrière-plan avec image
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
@@ -25,96 +25,81 @@ class _LandingState extends State<Landing> {
               ),
             ),
           ),
+          // Dégradé sombre
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
                   Colors.black.withOpacity(0),
-                  Colors.black.withOpacity(0),
-                  Colors.black.withOpacity(0.5),
-                  Colors.black.withOpacity(0.9),
-                  Colors.black.withOpacity(1)],
+                  Colors.black.withOpacity(0.3),
+                  Colors.black.withOpacity(0.7),
+                  Colors.black.withOpacity(1),
+                ],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
             ),
           ),
-          Positioned(
-            left: 20,
-            right: 20,
-            bottom: 50,
-            child: Column(
-              children: [
-                Image.asset(asset('bg-3.png')),
-                paddingTop(10),
-                Text(
-                  'Inguewa',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 35,
-                    fontWeight: FontWeight.w100,
-                    fontFamily: 'louisewalker',
-                  ),
-                ),
-                paddingTop(10),
-                Text(
-                  "L’idée de la création du Salon Inguewa est partie d’un constat. Bien souvent, les clients ont des difficultés à trouver des prestataires de qualité pouvant répondre à leurs différents besoins. Pour pallier à cela, Inguewa a trouvé la solution pour opérer « la magie » à vos événements.",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 13.5,
-                    fontFamily: 'Polyester',
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                paddingTop(25),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pushAndRemoveUntil(context,MaterialPageRoute(builder: (context) => Tabs(context,0)),(route)=>false);
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    height: 50,
-                    child: Stack(
-                      children: [
-                        Container(
-                          width: double.infinity,
-                          height: double.infinity,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage(asset('arriere-plan-vectoriel-motif-pointille-dans-style-aborigene_619130-1630.avif')),
-                              fit: BoxFit.cover,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                        ),
-                        Container(
-                          width: double.infinity,
-                          height: double.infinity,
-                          decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.4),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                        ),
-                        Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'CONTINUER',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
-                              SizedBox(width: 15),
-                              Icon(Icons.arrow_forward, color: Colors.white, size: 20),
-                            ],
-                          ),
-                        ),
-                      ],
+          // Contenu de la page de connexion
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  SizedBox(height: 50),
+                  Center(
+                    child: Text(
+                      "Bienvenu sur Inguewa.",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                  Spacer(),
+
+
+                  Center(
+
+                      child: Text(
+                        "L’idée de la création du Salon Inguewa est partie d’un constat. Bien souvent, les clients ont des difficultés à trouver des prestataires de qualité pouvant répondre à leurs différents besoins. Pour pallier à cela, Inguewa a trouvé la solution pour opérer « la magie » à vos événements.",
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+
+
+
+
+
+
+            const SizedBox(height: 50,),
+
+
+                  // Bouton Entrer
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.redAccent,
+                      padding: EdgeInsets.symmetric(vertical: 15),
+                    ),
+                    onPressed: () {
+                      Navigator.pushAndRemoveUntil(context,MaterialPageRoute(builder: (context) => Tabs(context,0)),(route)=>false);
+                    },
+                    child: Text(
+                      "Continuer",
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                  ),
+
+                  const SizedBox(height: 10,),
+                ],
+              ),
             ),
           ),
         ],

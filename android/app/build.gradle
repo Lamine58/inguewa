@@ -45,10 +45,14 @@ android {
         applicationId "com.example.inguewa"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion flutter.minSdkVersion
-        targetSdkVersion flutter.targetSdkVersion
-        versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
+       // minSdkVersion flutter.minSdkVersion
+      //  targetSdkVersion flutter.targetSdkVersion
+      //  versionCode flutterVersionCode.toInteger()
+       // versionName flutterVersionName
+        minSdk = 21
+        targetSdk = 34
+        versionCode = 1// Remplacez par la version souhaitée
+        versionName = "1.0.0" // Remplacez par la version souhaitée
     }
 
     buildTypes {
@@ -56,6 +60,11 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.debug
+            minifyEnabled true
+        }
+        debug{
+            minifyEnabled true
+            multiDexEnabled true
         }
     }
 }

@@ -73,12 +73,13 @@ class _CustomersState extends State<Customers> {
   Widget build(BuildContext context) {
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         iconTheme: IconThemeData(
           color: Colors.white
         ),
         toolbarHeight: 40,
-        backgroundColor: secondaryColor(),
+        backgroundColor:  Colors.redAccent,
         title: 
           Text(
             'Membres',
@@ -90,47 +91,34 @@ class _CustomersState extends State<Customers> {
             ),
           )
         ),
-        body: load ? Center(child: CircularProgressIndicator(color: secondaryColor())) : Column(
+        body: load ? Center(child: CircularProgressIndicator(color:  Colors.redAccent,)) : Column(
           children: [
             Container(
               padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(asset('arriere-plan-vectoriel-motif-pointille-dans-style-aborigene_619130-1630.avif')),
-                  fit: BoxFit.cover, // or BoxFit.fill depending on your need
-                ),
-              ),
+
               child: SizedBox(
                 height: 55,
-                child: TextField(
-                  controller: searchController,
-                  style: TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.all(10),
-                      hintText: 'Recherche',
-                      labelStyle: TextStyle(color: Colors.white),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      hintStyle: TextStyle(color: Color.fromARGB(169, 255, 255, 255),fontWeight: FontWeight.w300,fontSize: 15),
-                      filled: true,
-                      fillColor: const Color.fromARGB(255, 0, 0, 0).withOpacity(.8),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(
-                          color: Colors.transparent,
-                        )
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(
-                          color: Color.fromARGB(77, 255, 255, 255),
-                        )
-                      ),
-                      suffixIcon: Icon(BootstrapIcons.search,color: Color.fromARGB(188, 255, 255, 255),size: 20),
-                      prefixIcon: Container(child: Image.asset(asset('cauris.png')),padding: EdgeInsets.all(7),)
-                    ),
+                 child: TextField(
+                controller: searchController,
+                decoration: InputDecoration(
+                  hintText: 'Rechercher...',
+                  prefixIcon: Icon(BootstrapIcons.search),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color:   Colors.grey.shade300),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey.shade300),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey.shade300),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  filled: true,
+                  fillColor: Colors.grey.shade100,
                 ),
+              ),
               ),
             ),
             paddingTop(5),
